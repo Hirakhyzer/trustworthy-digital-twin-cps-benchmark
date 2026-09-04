@@ -1,0 +1,14 @@
+{
+  "seed": 7,
+  "steps": 180,
+  "domains": [
+    "battery",
+    "water",
+    "robot",
+    "microgrid",
+    "factory",
+    "ev_charging",
+    "railway"
+  ],
+  "calibration_quantile": 0.995
+}

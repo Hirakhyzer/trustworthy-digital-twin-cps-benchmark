@@ -1,0 +1,12 @@
+{
+  "known": [
+    "BIAS_ATTACK",
+    "FREEZE_ATTACK",
+    "REPLAY_ATTACK"
+  ],
+  "unknown": [
+    "REWRITTEN_REPLAY",
+    "DRIFT_ATTACK",
+    "COORDINATED_ATTACK"
+  ]
+}
