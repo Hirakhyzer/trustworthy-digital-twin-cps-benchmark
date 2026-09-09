@@ -18,3 +18,12 @@ jobs:
       - run: python -m pip install -e .
       - run: python -m unittest discover -s tests -v
       - run: python scripts/run_demo.py
+      - name: Run full cross-domain benchmark
+        if: matrix.python-version == '3.12'
+        run: python scripts/run_benchmark.py
+      - name: Run leave-one-domain-out protocol
+        if: matrix.python-version == '3.12'
+        run: python scripts/run_leave_one_domain_out.py
+      - name: Run unknown-attack protocol
+        if: matrix.python-version == '3.12'
+        run: python scripts/run_unknown_attack.py
