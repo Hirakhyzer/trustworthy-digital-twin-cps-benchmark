@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from twinsec.core.models import DiagnosisLabel
 from twinsec.core.utils import rmse
+from twinsec.benchmark.calibration import confidence_calibration
 
 
 FAMILY_TO_LABEL = {
@@ -39,6 +40,7 @@ def classification_metrics(step_results, event_family: str, cyber_families: set[
     ctp = cfp = ctn = cfn = 0
     atp = afp = atn = afn = 0
     recon_errors = []
+    calibration_rows = []
     first_anomaly = None
     diagnosis_correct = 0
     diagnosis_total = 0
@@ -63,6 +65,15 @@ def classification_metrics(step_results, event_family: str, cyber_families: set[
         elif not truth_event and predicted_anomaly: afp += 1
         else: atn += 1
 
+        # Calibration truth follows the benchmark protocol: the declared event
+        # label applies only inside its event window; outside it, NORMAL is the
+        # expected diagnosis. This prevents post-window false alarms from being
+        # hidden by event-level accuracy.
+        step_expected_label = expected_label if result.in_event_window else DiagnosisLabel.NORMAL
+        calibration_rows.append(
+            (result.diagnosis.label, result.diagnosis.confidence, step_expected_label)
+        )
+
         if result.in_event_window:
             diagnosis_total += 1
             if result.diagnosis.label == expected_label:
@@ -74,6 +85,7 @@ def classification_metrics(step_results, event_family: str, cyber_families: set[
 
     precision, recall, f1, fpr = _binary_metrics(atp, afp, atn, afn)
     cprecision, crecall, cf1, cfpr = _binary_metrics(ctp, cfp, ctn, cfn)
+    calibration = confidence_calibration(calibration_rows)
 
     delay = None
     if expected_event and first_anomaly is not None:
@@ -92,4 +104,9 @@ def classification_metrics(step_results, event_family: str, cyber_families: set[
         "cyber_false_positive_rate": cfpr,
         "diagnosis_accuracy": diagnosis_correct / diagnosis_total if diagnosis_total else 1.0,
         "reconstruction_rmse": rmse(recon_errors),
+        "confidence_brier_score": calibration.brier_score,
+        "confidence_log_loss": calibration.log_loss,
+        "confidence_ece": calibration.expected_calibration_error,
+        "confidence_mce": calibration.maximum_calibration_error,
+        "confidence_overconfidence_gap": calibration.overconfidence_gap,
     }
