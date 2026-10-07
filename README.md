@@ -2,15 +2,15 @@
 
 [![CI](https://github.com/Hirakhyzer/trustworthy-digital-twin-cps-benchmark/actions/workflows/ci.yml/badge.svg)](https://github.com/Hirakhyzer/trustworthy-digital-twin-cps-benchmark/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Status](https://img.shields.io/badge/status-PhD%20research%20prototype-orange)
+![Status](https://img.shields.io/badge/status-research%20prototype-orange)
 
 A cross-domain research framework for **trustworthy digital-twin cybersecurity in cyber-physical systems (CPS)**. The repository standardizes telemetry, attack/fault scenarios, digital-twin uncertainty, evidence fusion, trust assessment, diagnosis, state reconstruction, recovery, and benchmark metrics across heterogeneous CPS domains.
 
 > **Research boundary:** this repository is simulation-only and defensive. It contains no operational attack payloads, credentials, vendor-specific exploitation, or instructions for targeting real infrastructure. Domain models are reduced-order research abstractions and must not be described as validated operational twins.
 
-## PhD-level research question
+## Research question
 
-**Can a domain-independent trustworthy digital-twin framework distinguish cyberattacks from physical/sensor/network faults and model mismatch across heterogeneous CPS, while maintaining calibrated uncertainty and enabling resilient state reconstruction and recovery?**
+**Can a domain-independent trustworthy digital-twin framework distinguish cyberattacks from physical/sensor/network faults and model mismatch across heterogeneous CPS while maintaining calibrated uncertainty and enabling resilient state reconstruction and recovery?**
 
 ## Cross-domain architecture
 
@@ -69,17 +69,13 @@ These are **benchmark profiles**, not replacements for the larger domain reposit
 - common telemetry and event schema;
 - reusable reduced-order domain adapters;
 - digital-twin predictions with explicit uncertainty;
-- normalized physics residuals;
-- temporal freshness and sequence evidence;
-- domain invariants and cross-sensor consistency;
-- network-quality evidence;
-- weighted multi-source evidence fusion;
-- dynamic **source trust** and **digital-twin trust**;
-- explainable diagnosis labels;
-- trust-aware state reconstruction;
-- recovery supervision;
+- normalized physics residuals and multi-source evidence fusion;
+- dynamic source trust and digital-twin trust;
+- explainable diagnosis and trust-aware state reconstruction;
 - native-domain and leave-one-domain-out calibration;
-- cross-domain benchmark metrics and report generation;
+- event detection, cyber attribution and reconstruction metrics;
+- **diagnosis-confidence calibration** with Brier score, log loss, ECE, MCE and overconfidence gap;
+- **paired baseline-vs-candidate evaluation** with matched deltas and approximate confidence intervals;
 - deterministic seeds and reproducibility guidance.
 
 ## Quick start
@@ -96,19 +92,25 @@ python scripts/run_benchmark.py
 python scripts/run_leave_one_domain_out.py
 ```
 
-## Dissertation-oriented experiments
+## Evaluation direction
 
-1. **Cross-domain baseline:** compare identical detector architecture across all seven adapters.
-2. **Attack vs fault discrimination:** evaluate cyber, sensor, physical, network, operational-change and model-mismatch classes.
-3. **Leave-one-domain-out transfer:** calibrate on six domains and evaluate the held-out seventh.
-4. **Unknown attack:** calibrate using bias/freeze/replay and test on rewritten replay, drift and coordinated manipulation.
-5. **Trust ablation:** source trust only vs twin trust only vs joint trust.
-6. **Uncertainty ablation:** fixed thresholds vs uncertainty-normalized residuals.
-7. **Recovery evaluation:** compare raw telemetry, twin-only reconstruction and trust-weighted reconstruction.
-8. **Model mismatch stress test:** vary mismatch without changing attack logic.
+The benchmark is designed to test more than raw anomaly-detection accuracy. Current evaluation supports:
+
+1. cross-domain event detection and cyber attribution;
+2. attack-vs-fault-vs-model-mismatch discrimination;
+3. leave-one-domain-out threshold transfer;
+4. unknown-attack evaluation;
+5. source/twin trust ablation;
+6. uncertainty-normalized evidence ablation;
+7. recovery and reconstruction error;
+8. model-mismatch stress testing;
+9. diagnosis-confidence calibration;
+10. paired candidate-vs-baseline comparisons across matched experiments.
+
+A higher F1 score alone is not treated as sufficient evidence of trustworthiness. Calibration, false alarms, reconstruction quality, and consistency across domains/scenarios/seeds should be reported together. See `docs/calibration-and-paired-evaluation.md` for the new evaluation semantics.
 
 ## Scientific integrity
 
 All baseline outputs are synthetic and configuration dependent. Do not report them as measurements from real batteries, water plants, robots, grids, factories, EV infrastructure or railway systems. Every publication should record the commit SHA, configuration, seed, scenario window, thresholds, uncertainty assumptions, adapter version, and parameter provenance.
 
-See `docs/` for the benchmark specification, thesis alignment, threat model, trust model, uncertainty model, evaluation protocol, reproducibility checklist, baseline findings, limitations, ethics/safety boundaries, and research roadmap.
+See `docs/` for the benchmark specification, threat model, trust model, uncertainty model, evaluation protocol, reproducibility checklist, baseline findings, limitations, ethics/safety boundaries, and research roadmap.
